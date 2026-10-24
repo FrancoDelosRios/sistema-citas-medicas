@@ -1,16 +1,16 @@
-# 🏥 Sistema de Gestión de Citas Médicas (SaludPlus)
+#  Sistema de Gestión de Citas Médicas (SaludPlus)
 
 Un sistema web moderno y profesional diseñado para la reserva, gestión y seguimiento de citas médicas en línea.
 
 ---
 
-## 🚀 Características Principales
+##  Características Principales
 
-* 📅 **Reserva de Citas en 5 Pasos:** Flujo intuitivo con selección de especialidad, médico, fecha/hora y confirmación.
-* 📋 **Gestión de Citas ("Mis Citas"):** Panel de administración para visualizar, cancelar o reprogramar citas.
-* 👨‍⚕️ **Directorio de Especialistas:** Búsqueda y filtrado de profesionales de la salud con valoraciones y tarifas.
-* 🔔 **Notificaciones en Tiempo Real:** Feedback instantáneo mediante alertas interactivas al agendar o modificar citas.
-* 📱 **Diseño Responsive:** Adaptado a dispositivos móviles, tablets y computadoras de escritorio.
+* **Reserva de Citas en 5 Pasos:** Flujo intuitivo con selección de especialidad, médico, fecha/hora y confirmación.
+* **Gestión de Citas ("Mis Citas"):** Panel de administración para visualizar, cancelar o reprogramar citas.
+* **Directorio de Especialistas:** Búsqueda y filtrado de profesionales de la salud con valoraciones y tarifas.
+* **Notificaciones en Tiempo Real:** Feedback instantáneo mediante alertas interactivas al agendar o modificar citas.
+* **Diseño Responsive:** Adaptado a dispositivos móviles, tablets y computadoras de escritorio.
 
 ---
 
@@ -23,7 +23,7 @@ Un sistema web moderno y profesional diseñado para la reserva, gestión y segui
 
 ---
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```text
 ├── lib/                     # Código fuente principal de la aplicación[cite: 18, 19]

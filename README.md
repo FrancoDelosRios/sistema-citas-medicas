@@ -14,7 +14,7 @@ Un sistema web moderno y profesional diseñado para la reserva, gestión y segui
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+##  Tecnologías Utilizadas
 
 * **Frontend:** React / Tailwind CSS / Lucide Icons
 * **Backend / Lenguaje:** Dart (Flutter) / Node.js *(ajusta según tu stack)*

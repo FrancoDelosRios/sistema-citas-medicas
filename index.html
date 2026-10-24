@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaludPlus - Portal de Citas Médicas</title>
+    <!-- Tailwind CSS para los estilos visuales -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para los íconos de la interfaz -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <!-- Navegación principal -->
+    <header class="bg-white shadow-sm sticky top-0 z-40 border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('home')">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white shadow-md">
+                    <i class="fa-solid font-bold fa-heart-pulse text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-sky-600 to-blue-800 bg-clip-text text-transparent">SaludPlus</span>
+                    <span class="block text-[10px] font-semibold text-slate-400 tracking-wider">CENTRO MÉDICO</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex space-x-1">
+                <button onclick="switchTab('home')" id="nav-home" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-sky-600 bg-sky-50">
+                    <i class="fa-solid fa-house mr-2"></i>Inicio
+                </button>
+                <button onclick="switchTab('doctors')" id="nav-doctors" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
+                    <i class="fa-solid fa-user-doctor mr-2"></i>Especialistas
+                </button>
+                <button onclick="switchTab('appointments')" id="nav-appointments" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors relative">
+                    <i class="fa-solid fa-calendar-check mr-2"></i>Mis Citas
+                    <span id="badge-count" class="ml-2 bg-sky-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">1</span>
+                </button>
+            </nav>
+
+            <button onclick="openBookingModal()" class="gradient-bg text-white px-5 py-2.5 rounded-xl font-medium shadow-md shadow-sky-500/20 hover:opacity-95 transition-all flex items-center">
+                <i class="fa-solid fa-plus mr-2"></i>Reservar Cita
+            </button>
+        </div>
+    </header>
+
+    <!-- Notificación Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-sm font-medium">Operación realizada con éxito</span>
+    </div>
+
+    <!-- SECCIÓN 1: INICIO / BANNER -->
+    <main id="tab-home" class="tab-content">
+        <section class="gradient-bg text-white py-16 px-4 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
+                <div>
+                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-4 border border-white/30">
+                        <i class="fa-solid fa-shield-halved mr-1"></i> Atención médica acreditada
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight mb-6">Tu salud y la de tu familia en manos expertas.</h1>
+                    <p class="text-sky-100 text-lg mb-8">Agenda consultas médicas de forma rápida, segura y desde cualquier dispositivo. Atención presencial y telemedicina.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button onclick="openBookingModal()" class="bg-white text-sky-800 font-bold px-6 py-3.5 rounded-xl shadow-lg hover:bg-slate-100 transition-all">
+                            Agendar Cita Ahora
+                        </button>
+                        <button onclick="switchTab('doctors')" class="bg-sky-700/50 hover:bg-sky-700 text-white font-medium px-6 py-3.5 rounded-xl border border-white/20 transition-all">
+                            Ver Especialistas
+                        </button>
+                    </div>
+                </div>
+                <div class="hidden md:block text-center">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80" alt="Médicos" class="rounded-2xl shadow-2xl border-4 border-white/10 max-h-96 mx-auto object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- Especialidades -->
+        <section class="max-w-7xl mx-auto px-4 py-16">
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Especialidades Médicas</h2>
+            <p class="text-slate-500 mb-8">Selecciona el área donde requieres atención especializada</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="specialties-grid"></div>
+        </section>
+    </main>
+
+    <!-- SECCIÓN 2: DIRECTORIO DE MÉDICOS -->
+    <main id="tab-doctors" class="tab-content hidden max-w-7xl mx-auto px-4 py-10">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-slate-800">Nuestros Médicos Especialistas</h1>
+            <p class="text-slate-500">Conoce a nuestro personal capacitado y calificado</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6" id="doctors-list"></div>
+    </main>
+
+    <!-- SECCIÓN 3: MIS CITAS -->
+    <main id="tab-appointments" class="tab-content hidden max-w-7xl mx-auto px-4 py-10">
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-800">Mis Citas Médicas</h1>
+                <p class="text-slate-500">Gestión y seguimiento de tus consultas agendadas</p>
+            </div>
+            <button onclick="openBookingModal()" class="gradient-bg text-white px-4 py-2 rounded-xl text-sm font-medium">
+                + Nueva Cita
+            </button>
+        </div>
+        <div id="appointments-container" class="space-y-4"></div>
+    </main>
+
+    <!-- MODAL DE RESERVA DE CITAS -->
+    <div id="booking-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-xl font-bold">
+                &times;
+            </button>
+            <h3 class="text-xl font-bold text-slate-800 mb-4">Agendar Cita Médica</h3>
+            
+            <form id="booking-form" onsubmit="confirmBooking(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Especialidad</label>
+                    <select id="form-specialty" required onchange="filterDoctorsBySpecialty()" class="w-full border border-slate-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                        <option value="">Selecciona una especialidad</option>
+                        <option value="Cardiología">Cardiología</option>
+                        <option value="Pediatría">Pediatría</option>
+                        <option value="Dermatología">Dermatología</option>
+                        <option value="Odontología">Odontología</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Médico Especialista</label>
+                    <select id="form-doctor" required class="w-full border border-slate-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                        <option value="">Selecciona primero la especialidad</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Fecha</label>
+                        <input type="date" id="form-date" required class="w-full border border-slate-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Hora</label>
+                        <select id="form-time" required class="w-full border border-slate-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            <option value="09:00 AM">09:00 AM</option>
+                            <option value="11:30 AM">11:30 AM</option>
+                            <option value="03:00 PM">03:00 PM</option>
+                            <option value="04:30 PM">04:30 PM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Nombre Completo del Paciente</label>
+                    <input type="text" id="form-patient" placeholder="Ej. Franco De los Ríos" required class="w-full border border-slate-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Motivo de la Consulta</label>
+                    <textarea id="form-reason" rows="2" placeholder="Ej. Chequeo preventivo" class="w-full border border-slate-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-sky-500 outline-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end space-x-3">
+                    <button type="button" onclick="closeBookingModal()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50">Cancelar</button>
+                    <button type="submit" class="gradient-bg text-white px-5 py-2 rounded-xl text-sm font-bold shadow-md">Confirmar Cita</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LÓGICO -->
+    <script>
+        // Datos iniciales
+        const doctorsData = [
+            { id: 1, name: 'Dr. Alejandro Morales', specialty: 'Cardiología', fee: 'S/ 150', icon: 'fa-heart-pulse', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80' },
+            { id: 2, name: 'Dra. Elena Rostova', specialty: 'Dermatología', fee: 'S/ 130', icon: 'fa-wand-magic-sparkles', img: 'https://images.unsplash.com/photo-1594824813566-7885239e1246?auto=format&fit=crop&w=300&q=80' },
+            { id: 3, name: 'Dr. Roberto Mendoza', specialty: 'Pediatría', fee: 'S/ 120', icon: 'fa-baby', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80' },
+            { id: 4, name: 'Dra. Patricia Silva', specialty: 'Odontología', fee: 'S/ 100', icon: 'fa-tooth', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80' }
+        ];
+
+        let myAppointments = [
+            {
+                id: 'CIT-1001',
+                doctor: 'Dr. Alejandro Morales',
+                specialty: 'Cardiología',
+                date: '2026-11-05',
+                time: '10:00 AM',
+                patient: 'Franco De los Ríos',
+                reason: 'Evaluación anual de rutina'
+            }
+        ];
+
+        // Inicializar componentes al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSpecialties();
+            renderDoctors();
+            renderAppointments();
+            // Establecer fecha mínima para hoy en el formulario
+            document.getElementById('form-date').min = new Date().toISOString().split('T')[0];
+        });
+
+        // Cambiar pestañas
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.className = "px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors relative";
+            });
+            document.getElementById(`nav-${tab}`).className = "px-4 py-2 rounded-lg text-sm font-medium transition-colors text-sky-600 bg-sky-50 relative";
+        }
+
+        // Mostrar especialidades
+        function renderSpecialties() {
+            const grid = document.getElementById('specialties-grid');
+            const items = [
+                { name: 'Cardiología', icon: 'fa-heart-pulse', color: 'bg-rose-50 text-rose-600' },
+                { name: 'Pediatría', icon: 'fa-baby', color: 'bg-amber-50 text-amber-600' },
+                { name: 'Dermatología', icon: 'fa-wand-magic-sparkles', color: 'bg-purple-50 text-purple-600' },
+                { name: 'Odontología', icon: 'fa-tooth', color: 'bg-teal-50 text-teal-600' }
+            ];
+
+            grid.innerHTML = items.map(sp => `
+                <div onclick="openBookingModalWithSpecialty('${sp.name}')" class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer text-center group">
+                    <div class="w-12 h-12 ${sp.color} rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid ${sp.icon} text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">${sp.name}</h3>
+                </div>
+            `).join('');
+        }
+
+        // Mostrar médicos
+        function renderDoctors() {
+            const list = document.getElementById('doctors-list');
+            list.innerHTML = doctorsData.map(doc => `
+                <div class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <img src="${doc.img}" class="w-16 h-16 rounded-xl object-cover" alt="${doc.name}">
+                        <div>
+                            <h3 class="font-bold text-slate-800">${doc.name}</h3>
+                            <span class="text-xs bg-sky-50 text-sky-600 px-2 py-0.5 rounded-md font-semibold">${doc.specialty}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-slate-50 text-sm">
+                        <span class="text-slate-500">Consulta: <strong class="text-slate-800">${doc.fee}</strong></span>
+                        <button onclick="openBookingModalWithDoctor('${doc.name}', '${doc.specialty}')" class="text-sky-600 font-bold hover:underline">Reservar &rarr;</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Renderizar Mis Citas
+        function renderAppointments() {
+            const container = document.getElementById('appointments-container');
+            document.getElementById('badge-count').innerText = myAppointments.length;
+
+            if (myAppointments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-2xl border border-slate-100">
+                        <i class="fa-solid fa-calendar-xmark text-4xl text-slate-300 mb-3"></i>
+                        <p class="text-slate-500">No tienes citas registradas actualmente.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = myAppointments.map(app => `
+                <div class="bg-white border border-slate-100 p-5 rounded-2xl shadow-sm flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
+                    <div class="space-y-1">
+                        <span class="text-xs font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-600">${app.id}</span>
+                        <h3 class="font-bold text-slate-800 text-lg">${app.doctor}</h3>
+                        <p class="text-xs text-sky-600 font-semibold">${app.specialty} &bull; Paciente: ${app.patient}</p>
+                        <p class="text-xs text-slate-500">${app.reason}</p>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div class="text-right">
+                            <span class="block text-sm font-bold text-slate-800"><i class="fa-regular fa-calendar mr-1"></i> ${app.date}</span>
+                            <span class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i> ${app.time}</span>
+                        </div>
+                        <button onclick="cancelAppointment('${app.id}')" class="text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal de reserva
+        function openBookingModal() {
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function openBookingModalWithSpecialty(spec) {
+            openBookingModal();
+            document.getElementById('form-specialty').value = spec;
+            filterDoctorsBySpecialty();
+        }
+
+        function openBookingModalWithDoctor(docName, spec) {
+            openBookingModal();
+            document.getElementById('form-specialty').value = spec;
+            filterDoctorsBySpecialty();
+            document.getElementById('form-doctor').value = docName;
+        }
+
+        function filterDoctorsBySpecialty() {
+            const spec = document.getElementById('form-specialty').value;
+            const docSelect = document.getElementById('form-doctor');
+            const filtered = doctorsData.filter(d => d.specialty === spec);
+
+            docSelect.innerHTML = filtered.map(d => `<option value="${d.name}">${d.name}</option>`).join('');
+            if (filtered.length === 0) {
+                docSelect.innerHTML = '<option value="">Sin médicos disponibles</option>';
+            }
+        }
+
+        // Confirmar cita
+        function confirmBooking(event) {
+            event.preventDefault();
+
+            const newAppointment = {
+                id: `CIT-${Math.floor(1000 + Math.random() * 9000)}`,
+                specialty: document.getElementById('form-specialty').value,
+                doctor: document.getElementById('form-doctor').value,
+                date: document.getElementById('form-date').value,
+                time: document.getElementById('form-time').value,
+                patient: document.getElementById('form-patient').value,
+                reason: document.getElementById('form-reason').value || 'Consulta médica general'
+            };
+
+            myAppointments.push(newAppointment);
+            renderAppointments();
+            closeBookingModal();
+            showToast('¡Cita agendada con éxito!');
+            switchTab('appointments');
+            document.getElementById('booking-form').reset();
+        }
+
+        // Cancelar cita
+        function cancelAppointment(id) {
+            if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+                myAppointments = myAppointments.filter(app => app.id !== id);
+                renderAppointments();
+                showToast('Cita cancelada correctamente');
+            }
+        }
+
+        // Notificación Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
